@@ -1,0 +1,34 @@
+name: SAST com Claude Code
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sast-claude-code:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Analise SAST com Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Analise o codigo Python em app/ em busca de vulnerabilidades de seguranca.
+            Para cada vulnerabilidade encontrada, forneça:
+            - Tipo e severidade (CRITICA/ALTA/MEDIA/BAIXA)
+            - Arquivo e linha exata
+            - CWE e mapeamento OWASP Top 10
+            - Codigo vulneravel (trecho exato)
+            - Correcao recomendada com codigo
+            Ao final, gere um sumario com contagem por severidade e publique
+            os resultados como comentario neste Pull Request.
+          claude_args: |
+            --max-turns 10

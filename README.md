@@ -1,0 +1,1 @@
+# Teste SAST Claude Code
